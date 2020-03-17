@@ -204,7 +204,6 @@ db.task('get-everything', task => {
 			wins:data[1][0].winscount,
 			losses:data[2][0].count
 		})
-console.log(data[1]);
 
 })
 .catch(err => {
@@ -215,6 +214,57 @@ console.log(data[1]);
 			games: '',
 			result_2: '',
 			result_3: ''
+		})
+	});
+});
+app.get('/player_info', function(req, res) {
+var query = 'SELECT id, name FROM football_players where id > 20;';
+db.any(query)
+    .then(function (rows) {
+        res.render('pages/player_info',{
+			my_title: "My Title Here",
+			data:rows
+		})
+
+    })
+    .catch(function (err) {
+        // display error message in case an error
+        console.log('error', err);
+        res.render('pages/player_info',{
+			my_title: "My Title Here",
+			data: '',
+		})
+	});
+});
+app.get('/player_info/post', function(req, res) {
+var param = req.query.player_choice; 
+var query4 = 'SELECT id, name FROM football_players where id > 20;';
+var query5 = 'SELECT * FROM football_players WHERE id =' + param + ";";
+var query6 = 'Select COUNT(*) from football_players INNER JOIN football_games ON football_players.id = ANY(PLAYERS) WHERE ' + param +  ' = ANY(PLAYERS);'; 
+console.log(query6); 
+db.task('get-everything', task => {
+    return task.batch([
+        task.any(query4),
+        task.any(query5),
+        task.any(query6)
+    ]);
+})
+.then(info => {
+	res.render('pages/team_stats',{
+
+			my_title: "Test",
+			all:info[0],
+			player:info[1],
+			totalGames:info[2]
+		})
+console.log(info[2]); 
+})
+    .catch(function (err) {
+        // display error message in case an error
+        console.log('error', err);
+        res.render('pages/player_info',{
+			my_title: "My Title Here",
+			data: '',
 		})
 	});
 });

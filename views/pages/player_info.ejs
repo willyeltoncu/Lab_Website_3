@@ -15,6 +15,15 @@
 					<form class="form"action="/player_info/post" method="get">
 						<select class="custom-select" name="player_choice" onchange="this.form.submit()">
 							 <option selected>Select Player</option>
+						       
+							 <% for(var i = 0; i < data.length;i++) { %>
+							 <% data[i].id  = data[i].id-20 %> <!-- Table created incorrectly so players are in the table multiple times, correct ids are id-20 with id > 20 -->
+							  <% var tag = '<option value ="' + data[i].id.toString() +'">' + data[i].name.toString() + '</options>'; %>
+							<%- tag %>
+							
+							<% } %>
+
+
 							 <!-- TODO: Populate our select with player options
 							 			For each player, set a new option with a value matching the palyer's id, 
 							 			but will display the player's name-->
