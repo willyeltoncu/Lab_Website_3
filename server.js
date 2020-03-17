@@ -184,5 +184,39 @@ app.post('/home/pick_color', function(req, res) {
     });
 });
 
+
+app.get('/team_stats', function(req, res) {
+var query1 = "select * from football_games Where game_date < '20181125';";
+var query2 = "select count(*) as winsCount from football_games where game_date < '20181125' and visitor_score < home_score;";
+var query3 = "select count(*) from football_games where game_date < '20181125' and visitor_score > home_score;";
+db.task('get-everything', task => {
+    return task.batch([
+        task.any(query1),
+        task.any(query2),
+        task.any(query3)
+    ]);
+})
+.then(data => {
+	res.render('pages/team_stats',{
+
+			my_title: "Test",
+			games:data[0],
+			wins:data[1][0].winscount,
+			losses:data[2][0].count
+		})
+console.log(data[1]);
+
+})
+.catch(err => {
+    // display error message in case an error
+        console.log('error', err);
+        res.render('pages/team_stats',{
+			my_title: "Page Title Here",
+			games: '',
+			result_2: '',
+			result_3: ''
+		})
+	});
+});
 app.listen(3000);
 console.log('3000 is the magic port');
