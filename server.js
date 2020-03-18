@@ -218,12 +218,15 @@ db.task('get-everything', task => {
 	});
 });
 app.get('/player_info', function(req, res) {
-var query = 'SELECT id, name FROM football_players where id > 20;';
+var query = 'SELECT id, name FROM football_players;';
 db.any(query)
     .then(function (rows) {
         res.render('pages/player_info',{
 			my_title: "My Title Here",
-			data:rows
+			paramVar: '',
+			player: '',
+			data:rows,
+			totalGames: ''
 		})
 
     })
@@ -238,10 +241,10 @@ db.any(query)
 });
 app.get('/player_info/post', function(req, res) {
 var param = req.query.player_choice; 
-var query4 = 'SELECT id, name FROM football_players where id > 20;';
+var query4 = 'SELECT id, name FROM football_players;';
 var query5 = 'SELECT * FROM football_players WHERE id =' + param + ";";
-var query6 = 'Select COUNT(*) from football_players INNER JOIN football_games ON football_players.id = ANY(PLAYERS) WHERE ' + param +  ' = ANY(PLAYERS);'; 
-console.log(query6); 
+var query6 = 'Select COUNT(*) from football_games WHERE ' + param + ' = ANY(PLAYERS);'; 
+console.log(param); 
 db.task('get-everything', task => {
     return task.batch([
         task.any(query4),
@@ -250,12 +253,13 @@ db.task('get-everything', task => {
     ]);
 })
 .then(info => {
-	res.render('pages/team_stats',{
+	res.render('pages/player_info',{
 
 			my_title: "Test",
-			all:info[0],
-			player:info[1],
-			totalGames:info[2]
+			paramVar: param, 
+			data:info[0],
+			player:info[1][0],
+			totalGames:info[2][0].count
 		})
 console.log(info[2]); 
 })

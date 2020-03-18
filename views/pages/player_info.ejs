@@ -17,7 +17,6 @@
 							 <option selected>Select Player</option>
 						       
 							 <% for(var i = 0; i < data.length;i++) { %>
-							 <% data[i].id  = data[i].id-20 %> <!-- Table created incorrectly so players are in the table multiple times, correct ids are id-20 with id > 20 -->
 							  <% var tag = '<option value ="' + data[i].id.toString() +'">' + data[i].name.toString() + '</options>'; %>
 							<%- tag %>
 							
@@ -40,27 +39,43 @@
 							 			If a player has been selected, fill in their information in each of the fields below.
 							 		    You'll need to calculate here the player's average rushing, receiving, and passing yards.-->
 							<th>Year</th>
-							<td>	</td>
+							<% if(player) { %> 
+							<td><%=player.year %></td>
+							<% } %> 						<% var avgPass = player.passing_yards/totalGames;
+						   var avgRush = player.rushing_yards/totalGames;
+						   var avgRec = player.receiving_yards/totalGames; %> 
 						</tr>
 						<tr>
 							<th>Major</th>
-							<td>	</td>
+							<td><%=player.major %></td>
 						</tr>
 						<tr>
 							<th>Games Played</th>
-							<td>	</td>
+							<td><%= totalGames %>	</td>
 						</tr>
 						<tr>
-							<td>Passing Yards: </td>
-							<td>Avg. Passing Yards: </td>
+							<td>Passing Yards: <%= player.passing_yards %> </td>				<td>Avg. Passing Yards:
+							<% if(avgPass) { %> 
+							<%= avgPass %> 
+							<% } %> 							</td>
 						</tr>
 						<tr>
-							<td>Rushing Yards: </td>
-							<td>Avg. Rushing Yards: </td>
-						</tr>
+							<td>Rushing Yards: <%= player.rushing_yards %></td>
+							<td>Avg. Rushing Yards: 
+							<% if(avgRush) { %> 
+							<%= avgRush %> 
+							<% } %>
+							</td>
+						
+
+</tr>
 						<tr>
-							<td>Receiving Yards: </td>
-							<td>Avg. Receiving Yards: </td>
+							<td>Receiving Yards: <%= player.receiving_yards %></td>
+							<td>Avg. Receiving Yards: 
+							<% if(avgRec) { %> 
+							<%= avgRec %> 
+							<% } %>
+							</td>
 						</tr>
 					</table>
 				</div>
